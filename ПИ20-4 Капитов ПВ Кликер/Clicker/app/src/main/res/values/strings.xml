@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Clicker</string>
+    <string name="clicks" translatable="false">Кликов: 0</string>
+    <string name="increase" translatable="false">Нажми на меня (+1)</string>
+    <string name="decrease" translatable="false">Нажми на меня (-1)</string>
+    <string name="reset" translatable="false">Сбросить</string>
+    <string name="todo">TODO</string>
+</resources>
