@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">extra_tasks_1-2</string>
+    <string name="activity_1">Activity 1</string>
+    <string name="activity_2">Activity 2</string>
+    <string name="activity_3">Activity 3</string>
+    <string name="activity_4">Activity 4</string>
+    <string name="this_is_activity_1">This is activity 1</string>
+    <string name="this_is_activity_2">This is activity 2</string>
+    <string name="this_is_activity_3">This is activity 3</string>
+    <string name="this_is_activity_4">This is activity 4</string>
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">extra_tasks_3</string>
+    <string name="input_your_name">Введите ваше имя</string>
+    <string name="create_activity">Создать активити</string>
+</resources>
