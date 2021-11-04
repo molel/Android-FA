@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">intent_filters_extra_task_1</string>
+    <string name="type_address">Введите адрес</string>
+    <string name="go_to">Перейти</string>
+</resources>

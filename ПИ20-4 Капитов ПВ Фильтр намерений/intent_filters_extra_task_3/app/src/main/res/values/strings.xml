@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">intent_filters_extra_task_3</string>
+    <string name="choose_color">Выберите цвет</string>
+    <string name="choose_align">Выберите выравнивание</string>
+    <string name="start">Слева</string>
+    <string name="center">По центру</string>
+    <string name="end">Справа</string>
+    <string name="text">Text</string>
+    <string name="color">Color</string>
+    <string name="align">Align</string>
+</resources>
