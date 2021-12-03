@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">work_with_images_main_task</string>
+    <string name="btnCurrentWeek">Эта неделя</string>
+    <string name="btnImportant">Важные</string>
+    <string name="add">Добавить</string>
+    <string name="currentWeekLabel">Дела на текущую неделю</string>
+    <string name="importantLabel">Важные дела</string>
+</resources>
