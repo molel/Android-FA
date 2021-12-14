@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">simple_data_storage_extra_task_2</string>
+    <string name="name">Имя:</string>
+    <string name="group">Группа:</string>
+    <string name="age">Возраст</string>
+    <string name="date">Дата рождения</string>
+    <string name="makePhoto">Сделать снимок</string>
+    <string name="userPhoto">Пользовательское фото</string>
+</resources>
