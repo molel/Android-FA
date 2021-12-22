@@ -1,238 +1,213 @@
 package com.example.control_work;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Arrays;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-    Spinner spinner_day;
-    Spinner spinner_month;
-    Spinner spinner_year;
-    Spinner spinner_sex;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    ArrayAdapter<Integer> spinner_day_adapter;
-    ArrayAdapter<String> spinner_month_adapter;
-    ArrayAdapter<Integer> spinner_year_adapter;
-    ArrayAdapter<String> spinner_sex_adapter;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
 
-    EditText edit_text_lying;
-    EditText edit_text_standing;
+    Spinner spSex;
+    ArrayAdapter<String> aaSex;
 
-    Button complete_button;
+    EditText etLying;
+    EditText etStanding;
 
-    Integer[] days = new Integer[31];
-    String[] months = {"Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"};
-    Integer[] years = new Integer[122];
+    Button btnComplete;
+
     String[] sexes = {"М", "Ж"};
 
     int day;
-    String month;
+    int month;
     int year;
-    String sex;
+    int sex;
 
-    int lying_pulse;
-    int standing_pulse;
+    int lyingPulse;
+    int standingPulse;
 
-    public static class Pair<T1, T2> {
-        public T1 first;
-        public T2 second;
-
-        public Pair(T1 _first, T2 _second) {
-            first = _first;
-            second = _second;
-        }
-    }
+    Calendar calendar;
+    TextView tvDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        add_days_and_years();
-        set_elements();
+        setElements();
+    }
+
+    public void setTvDate(View v) {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.getDatePicker().setMaxDate(new Date().getTime());
+        datePickerDialog.show();
+    }
+
+    private void setInitialDateTime() {
+        tvDate.setText(DateUtils.formatDateTime(this,
+                calendar.getTimeInMillis(),
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
+    }
+
+
+    @Override
+    public void onDateSet(DatePicker view, int numberOfYear, int monthOfYear, int dayOfMonth) {
+        calendar.set(Calendar.YEAR, numberOfYear);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        year = numberOfYear;
+        month = monthOfYear + 1;
+        day = dayOfMonth;
+        setInitialDateTime();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        spinner_day_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, get_days());
-        spinner_day_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_day.setAdapter(spinner_day_adapter);
+        sex = i + 1;
     }
+
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
     }
 
+
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
-        get_date();
-        if (!check_pulse()) {
-            change_border(R.drawable.circle_corners_incorrect);
-            Toast.makeText(this, "Неверный ввод", Toast.LENGTH_SHORT).show();
-        } else {
-            get_pulse();
-
-            Pair<Boolean, Double> test = orthostatic_test();
-            boolean result_is_good = test.first;
-            double percent = test.second;
-
-            Intent intent = new Intent(this, ResultActivity.class);
-            intent.putExtra("result_is_good", result_is_good);
-            intent.putExtra("percent", percent);
-            startActivity(intent);
-        }
-    }
-
-    public void add_days_and_years() {
-        for (int i = 0; i < days.length; i++) {
-            days[i] = i + 1;
-        }
-
-        for (int i = 0; i < years.length; i++) {
-            years[i] = 2021 - i;
-        }
-    }
-
-    public void set_elements() {
-        spinner_year = findViewById(R.id.spinner_year);
-        spinner_year_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, years);
-        spinner_year_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_year.setAdapter(spinner_year_adapter);
-        spinner_year.setOnItemSelectedListener(this);
-
-        spinner_month = findViewById(R.id.spinner_month);
-        spinner_month_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, months);
-        spinner_month_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_month.setAdapter(spinner_month_adapter);
-        spinner_month.setOnItemSelectedListener(this);
-
-        spinner_day = findViewById(R.id.spinner_day);
-        spinner_day_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, get_days());
-        spinner_day_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_day.setAdapter(spinner_day_adapter);
-
-        spinner_sex = findViewById(R.id.spinner_sex);
-        spinner_sex_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sexes);
-        spinner_sex_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_sex.setAdapter(spinner_sex_adapter);
-
-        edit_text_lying = findViewById(R.id.lying_pulse);
-        edit_text_standing = findViewById(R.id.standing_pulse);
-
-        complete_button = findViewById(R.id.complete_button);
-        complete_button.setOnClickListener(this);
-    }
-
-    public Integer[] get_days() {
-        switch (spinner_month.getSelectedItem().toString()) {
-            case "Апрель":
-            case "Июнь":
-            case "Сентябрь":
-            case "Ноябрь":
-                return Arrays.copyOfRange(days, 0, 30);
-            case "Февраль":
-                if (Integer.parseInt(spinner_year.getSelectedItem().toString()) % 4 == 0) {
-                    return Arrays.copyOfRange(days, 0, 29);
+        switch (view.getId()) {
+            case R.id.tvDate:
+                setTvDate(tvDate);
+                break;
+            case R.id.complete_button:
+                if (!checkPulse()) {
+                    changeBorder(R.drawable.circle_corners_incorrect);
+                    Toast.makeText(this, StringStorage.INCORRECT_INPUT, Toast.LENGTH_SHORT).show();
                 } else {
-                    return Arrays.copyOfRange(days, 0, 28);
+                    getPulse();
+                    getResponse();
                 }
-            default:
-                return Arrays.copyOfRange(days, 0, 31);
         }
     }
 
-    public void get_date() {
-        day = Integer.parseInt(spinner_day.getSelectedItem().toString());
-        month = spinner_month.getSelectedItem().toString();
-        year = Integer.parseInt(spinner_year.getSelectedItem().toString());
-        sex = spinner_sex.getSelectedItem().toString();
+    public void setElements() {
+        spSex = findViewById(R.id.spinner_sex);
+        aaSex = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sexes);
+        aaSex.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spSex.setAdapter(aaSex);
+        spSex.setSelection(0);
+        spSex.setOnItemSelectedListener(this);
+
+        etLying = findViewById(R.id.lying_pulse);
+        etStanding = findViewById(R.id.standing_pulse);
+
+        btnComplete = findViewById(R.id.complete_button);
+        btnComplete.setOnClickListener(this);
+
+        calendar = Calendar.getInstance();
+        tvDate = findViewById(R.id.tvDate);
+        tvDate.setOnClickListener(this);
+        setInitialDateTime();
     }
 
-    public boolean check_pulse() {
-        return is_Integer(edit_text_lying.getText().toString()) && is_Integer(edit_text_standing.getText().toString());
+    public boolean checkPulse() {
+        return isInteger(etLying.getText().toString()) && isInteger(etStanding.getText().toString());
     }
 
-    public boolean is_Integer(String input) {
+    public boolean isInteger(String string) {
         try {
-            Integer.parseInt(input);
+            Integer.parseInt(string);
             return true;
         } catch (Exception e) {
             return false;
         }
     }
 
-    public void change_border(int drawable) {
-        edit_text_lying.setBackgroundResource(drawable);
-        edit_text_standing.setBackgroundResource(drawable);
+    public void changeBorder(int drawable) {
+        etLying.setBackgroundResource(drawable);
+        etStanding.setBackgroundResource(drawable);
     }
 
-    public void get_pulse() {
-        lying_pulse = Integer.parseInt(edit_text_lying.getText().toString());
-        standing_pulse = Integer.parseInt(edit_text_standing.getText().toString());
+    public void getPulse() {
+        lyingPulse = Integer.parseInt(etLying.getText().toString());
+        standingPulse = Integer.parseInt(etStanding.getText().toString());
     }
 
-    public Pair<Boolean, Double> orthostatic_test() {
-        int pulse_difference = Math.abs(standing_pulse - lying_pulse);
-        int main_pulse = (lying_pulse + standing_pulse) / 2;
-        int age = 2021 - year;
-        double percent;
-        if (sex.equals("М")) {
-            percent = (double) pulse_difference / 30;
-            if (age <= 17) {
-                if (60 <= main_pulse && main_pulse <= 80) {
-                    return new Pair<>(true, percent);
+    public void getResponse() {
+        Thread thread = new Thread(() -> {
+            try {
+                URL url = new URL(StringStorage.LINK);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod(StringStorage.METHOD);
+                connection.setRequestProperty(StringStorage.HOST_KEY, StringStorage.HOST_VALUE);
+                connection.setRequestProperty(StringStorage.CONNECTION_KEY, StringStorage.CONNECTION_VALUE);
+                connection.setRequestProperty(StringStorage.CACHE_KEY, StringStorage.CACHE_VALUE);
+                connection.setRequestProperty(StringStorage.DNT_KEY, StringStorage.DNT_VALUE);
+                connection.setRequestProperty(StringStorage.UPGRADE_KEY, StringStorage.UPGRADE_VALUE);
+                connection.setRequestProperty(StringStorage.ACCEPT_KEY, StringStorage.ACCEPT_VALUE);
+                connection.setRequestProperty(StringStorage.ENCODING_KEY, StringStorage.ENCODING_VALUE);
+                connection.setRequestProperty(StringStorage.LANGUAGE_KEY, StringStorage.LANGUAGE_VALUE);
+                connection.setRequestProperty(StringStorage.TYPE_KEY, StringStorage.TYPE_VALUE);
+                String parameters = "day=" + day + "&month=" + month + "&year=" + year + "&sex=" + sex + "&m1=" + lyingPulse + "&m2=" + standingPulse;
+                connection.setRequestProperty(StringStorage.LENGTH_KEY, String.valueOf(parameters.length()));
+                connection.setDoInput(StringStorage.INPUT);
+                connection.setDoOutput(StringStorage.OUTPUT);
+                connection.connect();
+
+                OutputStream outputStream = connection.getOutputStream();
+                outputStream.write(parameters.getBytes(StandardCharsets.UTF_8));
+                outputStream.close();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String data;
+                StringBuilder response = new StringBuilder();
+
+                while ((data = bufferedReader.readLine()) != null) {
+                    response.append(data);
                 }
-            } else {
-                if (age <= 40) {
-                    if (55 <= main_pulse && main_pulse <= 100) {
-                        return new Pair<>(true, percent);
-                    }
-                } else {
-                    if (age <= 60) {
-                        if (60 <= main_pulse && main_pulse <= 85) {
-                            return new Pair<>(true, percent);
-                        }
-                    } else {
-                        if (70 <= main_pulse && main_pulse <= 90) {
-                            return new Pair<>(true, percent);
-                        }
-                    }
-                }
+                bufferedReader.close();
+
+                String parsedResponse = new String(response.toString().getBytes(), StandardCharsets.UTF_8).replaceAll(StringStorage.RESPONSE_PATTERN, "");
+                Intent intent = new Intent(this, ResultActivity.class);
+                intent.putExtra(StringStorage.INTENT_KEY, parsedResponse);
+                startActivity(intent);
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
-        } else {
-            percent = (double) pulse_difference / 25;
-            if (age <= 17) {
-                if (60 <= main_pulse && main_pulse <= 80) {
-                    return new Pair<>(true, percent);
-                }
-            } else {
-                if (age <= 40) {
-                    if (60 <= main_pulse && main_pulse <= 75) {
-                        return new Pair<>(true, percent);
-                    }
-                } else {
-                    if (age <= 60) {
-                        if (75 <= main_pulse && main_pulse <= 85) {
-                            return new Pair<>(true, percent);
-                        }
-                    } else {
-                        if (80 <= main_pulse && main_pulse <= 90) {
-                            return new Pair<>(true, percent);
-                        }
-                    }
-                }
-            }
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (
+                InterruptedException e) {
+            e.printStackTrace();
         }
-        return new Pair<>(false, percent);
     }
 }
+

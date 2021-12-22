@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/79272/AndroidStudioProjects/Android-FA/control_work/app/src/main/res/drawable/gradient_green_to_blue.xml" value="0.14635416666666667" />
+        <entry key="..\:/Users/79272/AndroidStudioProjects/Android-FA/control_work/app/src/main/res/drawable/progress_bar.xml" value="0.14635416666666667" />
+        <entry key="..\:/Users/79272/AndroidStudioProjects/Android-FA/control_work/app/src/main/res/layout/activity_main.xml" value="0.16799999999999998" />
+        <entry key="..\:/Users/79272/AndroidStudioProjects/Android-FA/control_work/app/src/main/res/layout/activity_result.xml" value="0.13020833333333334" />
+        <entry key="..\:/Users/79272/AndroidStudioProjects/Android-FA/control_work/app/src/main/res/layout/test.xml" value="0.4" />
         <entry key="..\:/Users/79272/AndroidStudioProjects/control_work/app/src/main/res/drawable/circle_corners.xml" value="0.21822916666666667" />
         <entry key="..\:/Users/79272/AndroidStudioProjects/control_work/app/src/main/res/drawable/circle_corners_correct.xml" value="0.14635416666666667" />
         <entry key="..\:/Users/79272/AndroidStudioProjects/control_work/app/src/main/res/drawable/circle_corners_incorrect.xml" value="0.2601851851851852" />
