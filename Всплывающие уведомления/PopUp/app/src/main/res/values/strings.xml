@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Pop-Up</string>
+    <string name="pop_up_notification">Pop-up notification</string>
+</resources>
