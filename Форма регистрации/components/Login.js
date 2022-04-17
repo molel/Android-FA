@@ -39,23 +39,11 @@ export default class Login extends react.Component {
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button}>
-            <Text
-              style={styles.buttonText}
-              onPress={() => {
-                Alert.alert("Авторизация", "Вы успешно вошли в систему");
-              }}
-            >
-              Войти
-            </Text>
+            <Text style={styles.buttonText}>Войти</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => {
-              this.props.navigation.navigate("Register");
-            }}
-          >
+          <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Регистрация</Text>
           </TouchableOpacity>
         </View>
